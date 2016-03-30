@@ -1,3 +1,5 @@
+Graph class is from: http://www.python-course.eu/examples/graph2.py
+
 Insight Data Engineering - Coding Challenge
 ===========================================================
 
@@ -27,19 +29,19 @@ To clarify, a Twitter hashtag graph is a graph connecting all the hashtags that 
 ## Details of Implementation
 [Back to Table of Contents](README.md#table-of-contents)
 
-We'd like you to implement your own version of this.  However, we don't want this challenge to focus on the relatively uninteresting "dev ops" of connecting to the Twitter API, which can be complicated for some users.  Normally, tweets can be obtained through Twitter's API in JSON format, but you may assume that this has already been done and written to a file named `tweets.txt` inside a directory named `tweet_input`.  
+We'd like you to implement your own version of this.  However, we don't want this challenge to focus on the relatively uninteresting "dev ops" of connecting to the Twitter API, which can be complicated for some users.  Normally, tweets can be obtained through Twitter's API in JSON format, but you may assume that this has already been done and written to a file named `tweets.txt` inside a directory named `tweet_input`.
 
 This file `tweets.txt` will contain the actual JSON messages (and the messages emitted by the API about the connection and rate limits, which need to be properly removed from calculations).  `tweets.txt` will have the content of each tweet on a newline:
 
-`tweets.txt`: 
+`tweets.txt`:
 
-	{JSON of first tweet}  
-	{JSON of second tweet}  
-	{JSON of third tweet}  
+	{JSON of first tweet}
+	{JSON of second tweet}
+	{JSON of third tweet}
 	.
 	.
 	.
-	{JSON of last tweet}  
+	{JSON of last tweet}
 
 One example of the data for a single Tweet might look like:
 
@@ -69,7 +71,7 @@ One example of the data for a single Tweet might look like:
 
 Although this contains a lot of information, you will only need the **hashtags** and **created_at** fields of each entry, which are in bold in the above entry.
 
-You will update the Twitter hashtag graph each time you process a new tweet and hence, the average degree of the graph. The graph should only consist of tweets that arrived in the last 60 seconds as compared to the maximum timestamp that has been processed. 
+You will update the Twitter hashtag graph each time you process a new tweet and hence, the average degree of the graph. The graph should only consist of tweets that arrived in the last 60 seconds as compared to the maximum timestamp that has been processed.
 
 As new tweets come in, edges formed with tweets older than 60 seconds from the maximum timestamp being processed should be evicted. For each incoming tweet, only extract the following fields from the JSON response
 
@@ -89,11 +91,11 @@ hashtags = [Flink, Spark],          created_at: Thu Mar 24 17:51:55 +0000 2016
 
 Two hashtags will be connected if and only if they are present in the same tweet. Only tweets that contain two or more **DISTINCT** hashtags can create new edges.
 
-**NOTE:** The order of the tweets coming in **might not be ordered by time** (we'll see an example below on how to deal with tweets which are out of order in time), which mimics what one would get from Twitter's streaming API. 
+**NOTE:** The order of the tweets coming in **might not be ordered by time** (we'll see an example below on how to deal with tweets which are out of order in time), which mimics what one would get from Twitter's streaming API.
 
 A good way to create this graph is with an edge list where an edge is defined by two hashtags that are connected.
 
-In this case, the first tweet that enters the system has a timestamp of `Thu Mar 24 17:51:10 +0000 2016` and the edge formed is 
+In this case, the first tweet that enters the system has a timestamp of `Thu Mar 24 17:51:10 +0000 2016` and the edge formed is
 
 ```
 Spark <-> Apache
@@ -118,7 +120,7 @@ The edge list by first two tweets are:
 #Spark <-> #Apache
 
 #Apache <-> #Hadoop
-#Hadoop <-> #Storm 
+#Hadoop <-> #Storm
 #Storm <-> #Apache
 ```
 
@@ -222,7 +224,7 @@ The rolling average degree is
 ## Maintaining Data within the 60 Second Window
 [Back to Table of Contents](README.md#table-of-contents)
 
-Now let's say that the next tweet comes in and the extracted information is 
+Now let's say that the next tweet comes in and the extracted information is
 
 ```
 hashtags = [Hadoop, Apache], created_at: Thu Mar 24 17:52:12 +0000 2016
@@ -327,7 +329,7 @@ A new edge is added to the graph and the edge list becomes
 #HBase <-> $Spark
 
 #HBase <-> #Flink
-``` 
+```
 The graph can be visualized as
 
 ![tweet-out-of-order](images/htag_graph_6.png)
@@ -416,7 +418,7 @@ The output should be a file in the `tweet_output` directory named `output.txt` t
 Ideally, the updates of the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results to a text file named `output.txt` in the `tweet_output` directory.
 
 
-## Writing clean, scalable, and well-tested code  
+## Writing clean, scalable, and well-tested code
 [Back to Table of Contents](README.md#table-of-contents)
 
 As a data engineer, it’s important that you write clean, well-documented code that scales for large amounts of data.  For this reason, it’s important to ensure that your solution works well for a huge number of tweets, rather than just the simple examples above.  For example, your solution should be able to account for a large number of tweets coming in a short period of time, and need to keep up with the input (i.e. need to process a minute of tweets in less than a minute).  It's also important to use software engineering best practices like unit tests, especially since public data is not clean and predictable.  For more details about the implementation, please refer to the FAQ below or email us at cc@insightdataengineering.com
@@ -430,7 +432,7 @@ You may write your solution in any mainstream programming language such as C, C+
 
 Alternatively, here is example output of the `tree` command:
 
-	├── README.md 
+	├── README.md
 	├── run.sh
 	├── src
 	│   └── average_degree.java
@@ -452,7 +454,7 @@ Alternatively, here is example output of the `tree` command:
 	            └── tweet_output
 	                └── output.txt
 
-The contents of `src` do not have to contain a single file called "average_degree.java", you are free to include one or more files and name them as you wish.  
+The contents of `src` do not have to contain a single file called "average_degree.java", you are free to include one or more files and name them as you wish.
 
 ## Testing your directory structure and output format
 [Back to Table of Contents](README.md#table-of-contents)
@@ -463,7 +465,7 @@ The tests are stored simply as text files under the `insight_testsuite/tests` fo
 
 You can run the test with the following from the insight_testsuite folder:
 ```bash
-insight_testsuite$ ./run_tests.sh 
+insight_testsuite$ ./run_tests.sh
 ```
 
 The output of `run_tests.sh` should look like:
@@ -478,92 +480,92 @@ on failed tests and
 ```
 on success
 
-One test has been provided as a way to check your formatting and simulate how we will be running tests when you submit your solution. We urge you to write your own additional tests here as well as for your own programming language. `run_tests.sh` should alert you if the directory structure is incorrect. 
+One test has been provided as a way to check your formatting and simulate how we will be running tests when you submit your solution. We urge you to write your own additional tests here as well as for your own programming language. `run_tests.sh` should alert you if the directory structure is incorrect.
 
-  **Your submission must pass at least the provided test in order to pass the coding challenge**.  
+  **Your submission must pass at least the provided test in order to pass the coding challenge**.
 
 ## FAQ
 [Back to Table of Contents](README.md#table-of-contents)
 
 Here are some common questions we've received.  If you have additional questions, please email cc@insightdataengineering.com and we'll answer your questions as quickly as we can.
 
-* *Which Github link should I submit?*  
-You should submit the URL for the top-level root of your repository.  For example, this repo would be submitted by copying the URL `https://github.com/InsightDataScience/my-cc-example` into the appropriate field on the application.  Please do NOT try to submit your coding challenge using a pull request, which will make your source code publicly available.  
+* *Which Github link should I submit?*
+You should submit the URL for the top-level root of your repository.  For example, this repo would be submitted by copying the URL `https://github.com/InsightDataScience/my-cc-example` into the appropriate field on the application.  Please do NOT try to submit your coding challenge using a pull request, which will make your source code publicly available.
 
-* *Do I need a private Github repo?*  
+* *Do I need a private Github repo?*
 No, you may use a public repo, there is no need to purchase a private repo.  You may also submit a link to a Bitbucket repo if you prefer.
 
-* *Do you have any larger sample inputs?*  
-Yes, there is an example input with roughly 10,000 tweets in the `data-gen` directory of this repo.  This example includes the rate limiting messages (e.g. `{"limit": {"track":5,"timestamp_ms":"1446218985743"} }` ), which need to be properly removed.  It also contains a simplified producer that can connect to the live Twitter API and save the tweets to an input file that conforms to the requirements of this data challenge.  This is not required for the challenge, but may be helpful for testing your solution.  
+* *Do you have any larger sample inputs?*
+Yes, there is an example input with roughly 10,000 tweets in the `data-gen` directory of this repo.  This example includes the rate limiting messages (e.g. `{"limit": {"track":5,"timestamp_ms":"1446218985743"} }` ), which need to be properly removed.  It also contains a simplified producer that can connect to the live Twitter API and save the tweets to an input file that conforms to the requirements of this data challenge.  This is not required for the challenge, but may be helpful for testing your solution.
 
-* *May I use R or other analytics programming languages to solve the challenge?*  
-While you may use any programming language to complete the challenge, it's important that your implementation scales to handle large amounts of data.  Many applicants have found that R is unable to process data in a scalable fashion, so it may be more practical to use another language.  
+* *May I use R or other analytics programming languages to solve the challenge?*
+While you may use any programming language to complete the challenge, it's important that your implementation scales to handle large amounts of data.  Many applicants have found that R is unable to process data in a scalable fashion, so it may be more practical to use another language.
 
-* *May I use distributed technologies like Hadoop or Spark?*  
+* *May I use distributed technologies like Hadoop or Spark?*
 While you're welcome to use any language or technology, it will be tested on a single machine so there may not be a significant benefit to using these technologies prior to the program.  With that said, learning distributed systems is a valuable skill for all data engineers.
 
-* *What sort of system should I use to run my program on (Windows, Linux, Mac)?*  
-You may write your solution on any system, but your code should be portable and work on all systems.  In particular, your code must be able to run on either Unix or Linux, as that's the system that will be used for testing.  This means that you must submit a working `run.sh` script.  Linux machines are the industry standard for most data engineering companies, so it is helpful to be familiar with this.  If you're currently using Windows, we recommend using tools like Cygwin or Docker,  or a free online IDE such as Cloud9 (c9.io).  
+* *What sort of system should I use to run my program on (Windows, Linux, Mac)?*
+You may write your solution on any system, but your code should be portable and work on all systems.  In particular, your code must be able to run on either Unix or Linux, as that's the system that will be used for testing.  This means that you must submit a working `run.sh` script.  Linux machines are the industry standard for most data engineering companies, so it is helpful to be familiar with this.  If you're currently using Windows, we recommend using tools like Cygwin or Docker,  or a free online IDE such as Cloud9 (c9.io).
 
-* *When are two hashtags considered the same?*  
-Hashtags must be identical to be the same.  Specifically, you should treat hashtags as case-sensitive.  Thus `#Spark`, `#spark`, and `#SPARK` should all be counted as different hashtags with separate nodes in the hashtag graph.  
+* *When are two hashtags considered the same?*
+Hashtags must be identical to be the same.  Specifically, you should treat hashtags as case-sensitive.  Thus `#Spark`, `#spark`, and `#SPARK` should all be counted as different hashtags with separate nodes in the hashtag graph.
 
-* *What should I do with tweets that don't have at least two hashtags?*  
-These tweets still need to be processed, which may evict older tweets from the 60-second window that affects the graph, but they will not lead to new nodes or edges in the graph.  Tweets with only one hashtag should NOT create nodes.  
+* *What should I do with tweets that don't have at least two hashtags?*
+These tweets still need to be processed, which may evict older tweets from the 60-second window that affects the graph, but they will not lead to new nodes or edges in the graph.  Tweets with only one hashtag should NOT create nodes.
 
-* *Can I use pre-built packages, modules, or libraries?*   
+* *Can I use pre-built packages, modules, or libraries?*
 This coding challenge can be completed without any "exotic" packages.  While you may use publicly available packages, modules, or libraries, you must document any dependencies in your accompanying `README` file.  When we review your submission, we will download these libraries and attempt to run your program.  If you do use a package, you should always ensure that the module you're using works efficiently for the specific use-case in the challenge, since many libraries are not designed for large amounts of data.
 
-* *Will you email me if my code doesn't run?*   
+* *Will you email me if my code doesn't run?*
 Unfortunately, we receive hundreds of submissions in a very short time and are unable to email individuals if code doesn't compile or run.  This is why it's so important to document any dependencies you have, as described in the previous question.  We will do everything we can to properly test your code, but this requires good documentation.  More so, we have provided a test suite so you can confirm that your directory structure is correct.
 
-* *Do I need to use multi-threading?*   
-No, your solution doesn't necessarily need to include multi-threading - there are many solutions that don't require multiple threads/cores or any distributed systems, but instead use efficient data structures.  
+* *Do I need to use multi-threading?*
+No, your solution doesn't necessarily need to include multi-threading - there are many solutions that don't require multiple threads/cores or any distributed systems, but instead use efficient data structures.
 
-* *Do I need to account for an updating `tweets.txt` file?*   
-No, your solution doesn't have to re-process `tweets.txt`.  Instead, it should be designed to handle a very large input size.  If you were doing this project as a data engineer in industry, you would probably use a scheduler to run your program daily in batches, but this is beyond the scope of this challenge.  
+* *Do I need to account for an updating `tweets.txt` file?*
+No, your solution doesn't have to re-process `tweets.txt`.  Instead, it should be designed to handle a very large input size.  If you were doing this project as a data engineer in industry, you would probably use a scheduler to run your program daily in batches, but this is beyond the scope of this challenge.
 
-* *What should the format of the output be?*  
+* *What should the format of the output be?*
 In order to be tested correctly, you must use the format described above.  You can ensure that you have the correct format by using the testing suite we've included.  If you are still unable to get the correct format from the messages in the suite, please email us at cc@insightdataengineering.com.
 
-* *What should the precision of the average be?*  
-The precision of the average should be truncated to two digits after the decimal place (e.g. 5/3 should be outputted as 1.66).  
+* *What should the precision of the average be?*
+The precision of the average should be truncated to two digits after the decimal place (e.g. 5/3 should be outputted as 1.66).
 
-* *Do I need to account for complicated Unicode characters by replacing them?*  
+* *Do I need to account for complicated Unicode characters by replacing them?*
 No, simply use the Unicode as it is given in the hashtags field of the JSON.  If you alter the Unicode in your solution, it will not pass our testing suite.
 
-* *Will the JSON input contain the hashtag entity, or do I have to extract it from the text?*                                       
-You should use the hashtags directly from the entity field of the JSON.  Please don't extract it from the text field, as it's extra work for you.  
+* *Will the JSON input contain the hashtag entity, or do I have to extract it from the text?*
+You should use the hashtags directly from the entity field of the JSON.  Please don't extract it from the text field, as it's extra work for you.
 
-* *Do I need to account for empty tweets?*  
-No, for simplicity you may assume that all the tweets contain at least one word.  However, many tweets won't necessarily contain two hashtags, and may not form new edges in the graph.  This means you will have to test properly when implementing your solution for real data.   
+* *Do I need to account for empty tweets?*
+No, for simplicity you may assume that all the tweets contain at least one word.  However, many tweets won't necessarily contain two hashtags, and may not form new edges in the graph.  This means you will have to test properly when implementing your solution for real data.
 
-* *Do I need to update the average when the next tweet in the file falls outside the 60-second window?*  
-Yes, you're average should be updated each time a new tweet is processed, regardless of if it falls outside the window.  Thus, if there are 500 tweets in the `tweets.txt`, then there should be 500 averages in `output.txt`.  The only input that should be ignored are the rate-limit messages discussed above. 
+* *Do I need to update the average when the next tweet in the file falls outside the 60-second window?*
+Yes, you're average should be updated each time a new tweet is processed, regardless of if it falls outside the window.  Thus, if there are 500 tweets in the `tweets.txt`, then there should be 500 averages in `output.txt`.  The only input that should be ignored are the rate-limit messages discussed above.
 
-* *Do I need to account for JSON messages that looks like `{"limit": {"track":5,"timestamp_ms":"1446218985743"} }`, which appear in the example from the data generator?*  
+* *Do I need to account for JSON messages that looks like `{"limit": {"track":5,"timestamp_ms":"1446218985743"} }`, which appear in the example from the data generator?*
 These are messages from the Twitter API that result from the rate-limit.  Your solution needs to properly remove these messages from the input.
 
-* *Should my graph contain disconnected nodes?*                                       
-No, the graph should only contain connected nodes, and this also means that you may need to remove nodes if they are no longer connected once tweets are evicted from the 60-second window.  
+* *Should my graph contain disconnected nodes?*
+No, the graph should only contain connected nodes, and this also means that you may need to remove nodes if they are no longer connected once tweets are evicted from the 60-second window.
 
-* *Should I check if the files in the input directory are text files or non-text files(binary)?*  
+* *Should I check if the files in the input directory are text files or non-text files(binary)?*
 No, for simplicity you may assume that all of the files in the input directory are standard text files, with the same format as the example file in the `data-gen` directory.
 
-* *What should the average be if the graph has no connections (e.g. if the first tweet doesn't have at least two hashtags)?*  
-If there are no connections for the entire graph, then you can count the average as `0.00`.  
+* *What should the average be if the graph has no connections (e.g. if the first tweet doesn't have at least two hashtags)?*
+If there are no connections for the entire graph, then you can count the average as `0.00`.
 
-* *Should I count self connections if a hashtag appears multiple times in a tweet?*  
+* *Should I count self connections if a hashtag appears multiple times in a tweet?*
 No, for simplicity you should not count connection from a node to itself.  More so, the hashtag entities should properly de-duplicate these hashtags for you.
 
-* *Can I use an IDE like Eclipse to write my program?*  
+* *Can I use an IDE like Eclipse to write my program?*
 Yes, you can use what ever tools you want -  as long as your `run.sh` script correctly runs the relevant target files and creates the `output.txt` file in the `tweet_output` directory.
 
-* *What should be in the `tweet_input` directory?*  
+* *What should be in the `tweet_input` directory?*
 You can put any text file you want in the directory.  In fact, this could be quite helpful for testing your solutions.
 
-* *How will the coding challenge be evaluated?*  
-Generally, we will evaluate your coding challenge with a testing suite that provides a variety of input tweets and checks the corresponding output.  This suite will attempt to use your `run.sh` and is fairly tolerant to different runtime environments.  Of course, there are many aspects (e.g. clean code, documentation) that cannot be tested by our suite, so each submission will also be reviewed manually by a person. 
+* *How will the coding challenge be evaluated?*
+Generally, we will evaluate your coding challenge with a testing suite that provides a variety of input tweets and checks the corresponding output.  This suite will attempt to use your `run.sh` and is fairly tolerant to different runtime environments.  Of course, there are many aspects (e.g. clean code, documentation) that cannot be tested by our suite, so each submission will also be reviewed manually by a person.
 
-* *How long will it take for me to hear back from you about my submission?*  
-We receive hundreds of submissions and try to evaluate them all in a timely manner.  We try to get back to all applicants within two or three weeks of submission, but if you have a specific deadline that requires expedited review, you may email us at cc@insightdataengineering.com.  
+* *How long will it take for me to hear back from you about my submission?*
+We receive hundreds of submissions and try to evaluate them all in a timely manner.  We try to get back to all applicants within two or three weeks of submission, but if you have a specific deadline that requires expedited review, you may email us at cc@insightdataengineering.com.
