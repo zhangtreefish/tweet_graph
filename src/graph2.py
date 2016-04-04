@@ -29,19 +29,21 @@ class Graph(object):
     def add_edge(self, edge):
         """ assumes that edge is of type set, tuple or list;
             between two vertices can be multiple edges!
+            [Edited by this author: if edge]
         """
-        edge = set(edge)
-        vertex1 = edge.pop()
         if edge:
-            # not a loop
-            vertex2 = edge.pop()
-        else:
-            # a loop
-            vertex2 = vertex1
-        if vertex1 in self.__graph_dict:
-            self.__graph_dict[vertex1].append(vertex2)
-        else:
-            self.__graph_dict[vertex1] = [vertex2]
+            edge = set(edge)
+            vertex1 = edge.pop()
+            if edge:
+                # not a loop
+                vertex2 = edge.pop()
+            else:
+                # a loop
+                vertex2 = vertex1
+            if vertex1 in self.__graph_dict:
+                self.__graph_dict[vertex1].append(vertex2)
+            else:
+                self.__graph_dict[vertex1] = [vertex2]
 
     def __generate_edges(self):
         """ A static method generating the edges of the

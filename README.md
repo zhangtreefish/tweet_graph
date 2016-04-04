@@ -1,4 +1,8 @@
 Graph class is from: http://www.python-course.eu/examples/graph2.py
+http://www.codercaste.com/2010/01/11/how-to-filter-lists-in-python/
+https://docs.python.org/2/tutorial/datastructures.html
+http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
+Head First Python, by Paul Barry, 2011.
 
 Insight Data Engineering - Coding Challenge
 ===========================================================
