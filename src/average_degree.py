@@ -13,12 +13,9 @@ def average_degree(graph):
     """get average degree given a graph object"""
     ds = graph.degree_sequence()
     total_degrees = sum(ds)
-    # print 'egree_sequence and total_degrees:', ds, total_degrees
     no_vertices = len(ds)
-    # print 'no_vertices:', no_vertices
     if no_vertices != 0:
         average_degree = round(total_degrees/no_vertices,2)
-        # print 'average_degree:', average_degree
         return '%.2f' % average_degree
 
 # test the method with a sample Graph object
@@ -32,12 +29,9 @@ g_no_loop = { "a" : ["d"],
 
 graph_test = Graph(g_no_loop)
 result = average_degree(graph_test)
-# print result
-
-os.chdir('../data-gen')
 
 try:
-    with open('tweets.txt', 'r') as tweets, open ('output.txt', 'w') as output:
+    with open('./tweet_input/tweets.txt', 'r') as tweets, open ('./tweet_output/output.txt', 'w') as output:
         # make a pretty global dictionary to store time and hashtag info
         hashtag_dict = OrderedDict()
         time_last_tweet = None
@@ -85,11 +79,8 @@ try:
                         hashtag_graph.add_edge(hashtag_dict[created_at])
                         result = average_degree(hashtag_graph)
                         print result
-
                         output.write(str(result) + '\n')
                     continue
 
 except IOError as err:
     print 'File error:', str(err)
-
-
