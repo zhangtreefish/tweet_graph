@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import division
 from graph2 import Graph
 import json
@@ -9,26 +11,23 @@ from datetime import datetime
 from collections import OrderedDict
 
 
-def average_degree(graph):
-    """get average degree given a graph object"""
-    ds = graph.degree_sequence()
-    total_degrees = sum(ds)
-    no_vertices = len(ds)
+def average_degree(dictionary):
+    """get average degree given a dict"""
+    graph = Graph()
+    average_degree = '0.00'
+    for k in dictionary:
+        for l in dictionary[k]:
+            graph.add_vertex(l)
+        for i in range(len(dictionary[k]) - 1):
+            for j in range(i+1, len(dictionary[k])):
+                graph.add_edge((dictionary[k][i], dictionary[k][j]))
+                graph.add_edge((dictionary[k][j], dictionary[k][i]))
+    edges = float(len(graph.edges()))
+    no_vertices = float(len(graph.vertices()))
     if no_vertices != 0:
-        average_degree = round(total_degrees/no_vertices,2)
-        return '%.2f' % average_degree
-
-# test the method with a sample Graph object
-g_no_loop = { "a" : ["d"],
-              "b" : ["c"],
-              "c" : ["b", "d", "e"],
-              "d" : ["a", "c"],
-              "e" : ["c"],
-              "f" : []
-            }
-
-graph_test = Graph(g_no_loop)
-result = average_degree(graph_test)
+        average_degree = round(2*edges/no_vertices,2)
+        print '%.2f' % average_degree
+    return average_degree
 
 try:
     with open('./tweet_input/tweets.txt', 'r') as tweets, open ('./tweet_output/output.txt', 'w') as output:
@@ -46,7 +45,7 @@ try:
                     # get the time of the tweet
                     created_at = tweet_json['created_at']
                     # get the time of the last tweet
-                    if time_last_tweet is None:
+                    if time_last_tweet is None or len(hashtag_dict.keys()) == 0:
                         time_last_tweet = created_at
                     else:
                         time_last_tweet = hashtag_dict.keys()[-1]
@@ -61,12 +60,14 @@ try:
                                 hashtag_list = []
                                 # make a list with the hashtags
                                 for hashtag in hashtags:
-                                    # encode() turns unicode to string
-                                    tag = hashtag['text'].encode('utf-8').strip()
-                                    hashtag_list.append(tag)
-                                # store the time and tags as key:value pairs in the dictionary
-                                hashtag_dict[created_at] = hashtag_list
-                                # print created_at, hashtag_dict[created_at]
+                                    if 'text' in hashtag:
+                                        # encode() turns unicode to string
+                                        tag = hashtag['text'].encode('utf-8').strip()
+                                        hashtag_list.append(tag)
+                                # store the time and tags as key:value pairs
+                                # in the dictionary if at least 2 tags
+                                if len(hashtag_list) > 1:
+                                    hashtag_dict[created_at] = hashtag_list
                     # remove the tweets more than 60 second older than the current tweet
                     for k in hashtag_dict.keys():
                         time_elapsed = datetime.strptime(created_at.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y") - datetime.strptime(k.encode('utf-8'),"%a %b %d %H:%M:%S +0000 %Y")
@@ -74,11 +75,8 @@ try:
                             del hashtag_dict[k]
                     # finally, all the preparation leads to: average degree!
                     if hashtag_dict:
-                        hashtag_graph = Graph()
-                        # print 'dict[created_at]', hashtag_dict[created_at]
-                        hashtag_graph.add_edge(hashtag_dict[created_at])
-                        result = average_degree(hashtag_graph)
-                        print result
+                        result = average_degree(hashtag_dict)
+                        # print result
                         output.write(str(result) + '\n')
                     continue
 

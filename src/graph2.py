@@ -34,12 +34,13 @@ class Graph(object):
         if edge:
             edge = set(edge)
             vertex1 = edge.pop()
+            vertex2 = None
             if edge:
                 # not a loop
                 vertex2 = edge.pop()
-            else:
-                # a loop
-                vertex2 = vertex1
+            # else:
+            #     # a loop
+            #     vertex2 = vertex1
             if vertex1 in self.__graph_dict:
                 self.__graph_dict[vertex1].append(vertex2)
             else:
