@@ -19,3 +19,4 @@ Go to the project directory ('coding-challenge/'), and enter:
 7. http://stackoverflow.com/questions/455612/limiting-floats-to-two-decimal
    -points
 8. http://www.cyberciti.biz/faq/run-execute-sh-shell-script/
+9. https://github.com/m-yu/InsightTwitterProject/blob/master/src/average_degree.py
