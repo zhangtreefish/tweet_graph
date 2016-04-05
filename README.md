@@ -5,7 +5,6 @@ last 60 seconds, and update this each time a new tweet appears.
 
 # How to Run the Program
 Go to the project directory ('coding-challenge/'), and enter:
--- python src/average_degree.py; ##or##
 -- sh run.sh
 
 # References
