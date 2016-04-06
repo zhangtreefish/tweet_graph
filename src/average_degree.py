@@ -69,7 +69,6 @@ class Graph(object):
 
 def average_degree_graph(graph):
     """get average degree of a graph object"""
-    average_degree = 0.00
     edges = float(len(graph.edges()))
     no_vertices = float(len(graph.vertices()))
     if no_vertices != 0:
@@ -122,7 +121,8 @@ def main():
                                 # if 'text' in hashtags[hashtag]:
                                 #     hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
                                 # update hashtag_dict if at least 2 tags
-                                if len(set(hashtag_list)) > 1:
+                                hashtag_list = list(set(hashtag_list)) # keep only unique tags
+                                if len(hashtag_list) > 1:
                                     hashtag_dict[created_at] = hashtag_list
                                     # print 'hashtag_dict_before_remove', hashtag_dict
                                     # for tag in hashtag_list:
@@ -135,7 +135,8 @@ def main():
                         continue
 
                     # remove the tweets more than 60 second older than the current tweet
-                    for k in sorted(hashtag_dict.keys()):
+                    sorted_key_list = sorted(hashtag_dict.keys())
+                    for k in sorted_key_list:
                         time_elapsed = created_at - k
                         if time_elapsed.total_seconds() > 60:
                             del hashtag_dict[k]
