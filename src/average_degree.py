@@ -85,72 +85,73 @@ def main():
             hashtag_dict = OrderedDict()
             # graph = Graph()
             time_last_tweet = None
-            while True:
+            for line in tweets:
                 # read each tweet (per line in the .txt file)
-                tweet = tweets.readline().decode('utf-8')
-                if not tweet:
-                    break;
-                else:
-                    tweet_json = json.loads(tweet) # dict object
-                    if 'created_at' in tweet_json: # needed to address keyError
-                        # get the time of the tweet
-                        created_at = datetime.strptime(tweet_json['created_at'].encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
-                        # get the time of the last tweet
-                        if time_last_tweet is None or len(hashtag_dict.keys()) == 0:
-                            time_last_tweet = created_at
-                        else:
-                            time_last_tweet = hashtag_dict.keys()[-1]
-                        # ensure to only address tweets not over 60 seconds older than the last
-                        # time_current = datetime.strptime(created_at.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
-                        # time_last = datetime.strptime(time_last_tweet.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
-                        time_delta = created_at - time_last_tweet
-                        if time_delta.total_seconds() > - 60:
-                            if 'entities' in tweet_json:
-                                if 'hashtags' in tweet_json['entities']:
-                                    hashtags = tweet_json['entities']['hashtags']
-                                    hashtag_list = []
-                                    # make a list with the hashtags
-                                    for hashtag in hashtags:
-                                        if 'text' in hashtag:
-                                            # encode() turns unicode to string
-                                            tag = hashtag['text'].encode('utf-8').strip()
-                                            hashtag_list.append(tag)
+                tweet = line.decode('utf-8')
+                # if not tweet:
+                #     break;
+                # else:
+                tweet_json = json.loads(tweet) # dict object
+                if 'created_at' in tweet_json: # needed to address keyError
+                    # get the time of the tweet
+                    created_at = datetime.strptime(tweet_json['created_at'].encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
+                    # get the time of the last tweet
+                    if time_last_tweet is None or len(hashtag_dict.keys()) == 0:
+                        time_last_tweet = created_at
+                    else:
+                        time_last_tweet = hashtag_dict.keys()[-1]
+                    # ensure to only address tweets not over 60 seconds older than the last
+                    # time_current = datetime.strptime(created_at.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
+                    # time_last = datetime.strptime(time_last_tweet.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
+                    time_delta = created_at - time_last_tweet
+                    if time_delta.total_seconds() > - 60:
+                        if 'entities' in tweet_json:
+                            if 'hashtags' in tweet_json['entities']:
+                                hashtags = tweet_json['entities']['hashtags']
+                                hashtag_list = []
+                                # make a list with the hashtags
+                                for hashtag in hashtags:
+                                    if 'text' in hashtag:
+                                        # encode() turns unicode to string
+                                        tag = hashtag['text'].encode('utf-8').strip()
+                                        hashtag_list.append(tag)
 
-                                    # TODO: list comprehension below raises empty set error
-                                    #
-                                    # if 'text' in hashtags[hashtag]:
-                                    #     hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
-                                    # update hashtag_dict if at least 2 tags
-                                    if len(set(hashtag_list)) > 1:
-                                        hashtag_dict[created_at] = hashtag_list
-                                        # print 'hashtag_dict_before_remove', hashtag_dict
-                                        # for tag in hashtag_list:
-                                        #     graph.add_vertex(tag)
-                                        # for start in range(len(hashtag_list) - 1):
-                                        #     for end in range(start+1, len(hashtag_list)):
-                                        #         graph.add_edge((hashtag_list[start], hashtag_list[end]))
-                                        #         graph.add_edge((hashtag_list[end], hashtag_list[start]))
-
-                        # remove the tweets more than 60 second older than the current tweet
-                        for k in sorted(hashtag_dict.keys()):
-                            time_elapsed = created_at - k
-                            if time_elapsed.total_seconds() > 60:
-                                del hashtag_dict[k]
-                            else:
-                                break
-                        # finally, fill the graph, and derive average degree
-                        graph = Graph()
-                        for k in hashtag_dict:
-                            for tag in hashtag_dict[k]:
-                                graph.add_vertex(tag)
-                            length = len(hashtag_dict[k])
-                            for start in range(length - 1):
-                                for end in range(start+1, length):
-                                    graph.add_edge((hashtag_dict[k][start], hashtag_dict[k][end]))
-                            result = average_degree_graph(graph)
-                            print result
-                            output.write(str(result) + '\n')
+                                # TODO: list comprehension below raises empty set error
+                                #
+                                # if 'text' in hashtags[hashtag]:
+                                #     hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
+                                # update hashtag_dict if at least 2 tags
+                                if len(set(hashtag_list)) > 1:
+                                    hashtag_dict[created_at] = hashtag_list
+                                    # print 'hashtag_dict_before_remove', hashtag_dict
+                                    # for tag in hashtag_list:
+                                    #     graph.add_vertex(tag)
+                                    # for start in range(len(hashtag_list) - 1):
+                                    #     for end in range(start+1, len(hashtag_list)):
+                                    #         graph.add_edge((hashtag_list[start], hashtag_list[end]))
+                                    #         graph.add_edge((hashtag_list[end], hashtag_list[start]))
+                    else:
                         continue
+                    # remove the tweets more than 60 second older than the current tweet
+                    for k in sorted(hashtag_dict.keys()):
+                        time_elapsed = created_at - k
+                        if time_elapsed.total_seconds() > 60:
+                            del hashtag_dict[k]
+                        else:
+                            break
+                    # finally, initialize the graph, and derive average degree
+                    graph = Graph()
+                    for k in hashtag_dict:
+                        for tag in hashtag_dict[k]:
+                            graph.add_vertex(tag)
+                        length = len(hashtag_dict[k])
+                        for start in range(length - 1):
+                            for end in range(start+1, length):
+                                graph.add_edge((hashtag_dict[k][start], hashtag_dict[k][end]))
+                        result = average_degree_graph(graph)
+                        print result
+                        output.write(str(result) + '\n')
+                    continue
 
     except IOError as err:
         print 'File error:', str(err)
