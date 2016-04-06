@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import division
-#from graph2 import Graph
+from graph2 import Graph
 import json
 import os
 import pdb
