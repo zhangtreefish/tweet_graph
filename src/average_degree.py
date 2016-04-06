@@ -83,6 +83,7 @@ def main():
         with open(sys.argv[1], 'r') as tweets, open (sys.argv[2], 'w') as output:
             # make a pretty global dictionary to store time and hashtag info
             hashtag_dict = OrderedDict()
+            result = 0.00
             # graph = Graph()
             # time_last_tweet = None
             for line in tweets:
@@ -132,6 +133,7 @@ def main():
                                     #         graph.add_edge((hashtag_list[end], hashtag_list[start]))
                     else:
                         continue
+
                     # remove the tweets more than 60 second older than the current tweet
                     for k in sorted(hashtag_dict.keys()):
                         time_elapsed = created_at - k
@@ -139,6 +141,7 @@ def main():
                             del hashtag_dict[k]
                         else:
                             break
+
                     # finally, initialize the graph, and derive average degree
                     graph = Graph()
                     for k in hashtag_dict:
@@ -150,8 +153,11 @@ def main():
                                 graph.add_edge((hashtag_dict[k][start], hashtag_dict[k][end]))
                         result = average_degree_graph(graph)
                         print result
-                        output.write(str(result) + '\n')
+                # ignore those lines without 'created_at'
+                else:
                     continue
+                # for each valid line, report the result
+                output.write(str(result) + '\n')
 
     except IOError as err:
         print 'File error:', str(err)
