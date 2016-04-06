@@ -84,7 +84,7 @@ def main():
             # make a pretty global dictionary to store time and hashtag info
             hashtag_dict = OrderedDict()
             # graph = Graph()
-            time_last_tweet = None
+            # time_last_tweet = None
             for line in tweets:
                 # read each tweet (per line in the .txt file)
                 tweet = line.decode('utf-8')
@@ -96,7 +96,7 @@ def main():
                     # get the time of the tweet
                     created_at = datetime.strptime(tweet_json['created_at'].encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y")
                     # get the time of the last tweet
-                    if time_last_tweet is None or len(hashtag_dict.keys()) == 0:
+                    if len(hashtag_dict.keys()) == 0:
                         time_last_tweet = created_at
                     else:
                         time_last_tweet = hashtag_dict.keys()[-1]
