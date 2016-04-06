@@ -26,7 +26,7 @@ def main():
         with open(sys.argv[1], 'r') as tweets, open (sys.argv[2], 'w') as output:
             # make a pretty global dictionary to store time and hashtag info
             hashtag_dict = OrderedDict()
-            result = 0.00
+            result = '0.00'
             # iterate over the input file, one line at a time
             for line in tweets:
                 tweet = line.decode('utf-8')
