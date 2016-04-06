@@ -59,20 +59,9 @@ def main():
                                             # encode() turns unicode to string
                                             tag = hashtag['text'].encode('utf-8').strip()
                                             hashtag_list.append(tag)
-
-                                    # TODO: list comprehension below raises empty set error
-                                    # hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
-                                    # update hashtag_dict if at least 2 tags
+                                    # update hashtag_dict with tweet having at least 2 unique tags
                                     if len(set(hashtag_list)) > 1:
                                         hashtag_dict[created_at] = hashtag_list
-                                        # print 'hashtag_dict_before_remove', hashtag_dict
-                                        # for tag in hashtag_list:
-                                        #     graph.add_vertex(tag)
-                                        # for start in range(len(hashtag_list) - 1):
-                                        #     for end in range(start+1, len(hashtag_list)):
-                                        #         graph.add_edge((hashtag_list[start], hashtag_list[end]))
-                                        #         graph.add_edge((hashtag_list[end], hashtag_list[start]))
-
                         # remove the tweets more than 60 second older than the current tweet
                         for k in sorted(hashtag_dict.keys()):
                             time_elapsed = datetime.strptime(created_at.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y") - datetime.strptime(k.encode('utf-8'),"%a %b %d %H:%M:%S +0000 %Y")
@@ -89,6 +78,7 @@ def main():
                                 for end in range(start+1, length):
                                     graph.add_edge((hashtag_dict[k][start], hashtag_dict[k][end]))
                             result = average_degree_graph(graph)
+                            print result
                             output.write(str(result) + '\n')
                         continue
 
