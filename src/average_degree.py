@@ -11,30 +11,23 @@ from datetime import datetime
 from collections import OrderedDict
 import sys
 
-
-def average_degree(dictionary):
-    """get average degree given a dict"""
-    graph = Graph()
+def average_degree_graph(graph):
+    """get average degree of a graph object"""
     average_degree = '0.00'
-    for k in dictionary:
-        for l in dictionary[k]:
-            graph.add_vertex(l)
-        for i in range(len(dictionary[k]) - 1):
-            for j in range(i+1, len(dictionary[k])):
-                graph.add_edge((dictionary[k][i], dictionary[k][j]))
-                graph.add_edge((dictionary[k][j], dictionary[k][i]))
     edges = float(len(graph.edges()))
     no_vertices = float(len(graph.vertices()))
     if no_vertices != 0:
-        average_degree = round(2*edges/no_vertices,2)
-        print '%.2f' % average_degree
-    return average_degree
+        average_degree = round(2*edges/no_vertices, 2)
+        # print '%.2f' % average_degree
+    # print 'res:', edges, no_vertices, average_degree
+    return '%.2f' % average_degree
 
 def main():
     try:
         with open(sys.argv[1], 'r') as tweets, open (sys.argv[2], 'w') as output:
             # make a pretty global dictionary to store time and hashtag info
             hashtag_dict = OrderedDict()
+            graph = Graph()
             time_last_tweet = None
             while True:
                 # read each tweet (per line in the .txt file)
@@ -66,19 +59,36 @@ def main():
                                             # encode() turns unicode to string
                                             tag = hashtag['text'].encode('utf-8').strip()
                                             hashtag_list.append(tag)
-                                    # store the time and tags as key:value pairs
-                                    # in the dictionary if at least 2 tags
-                                    if len(hashtag_list) > 1:
+
+                                    # TODO: list comprehension below raises empty set error
+                                    # hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
+                                    # update hashtag_dict if at least 2 tags
+                                    if len(set(hashtag_list)) > 1:
                                         hashtag_dict[created_at] = hashtag_list
+                                        # print 'hashtag_dict_before_remove', hashtag_dict
+                                        # for tag in hashtag_list:
+                                        #     graph.add_vertex(tag)
+                                        # for start in range(len(hashtag_list) - 1):
+                                        #     for end in range(start+1, len(hashtag_list)):
+                                        #         graph.add_edge((hashtag_list[start], hashtag_list[end]))
+                                        #         graph.add_edge((hashtag_list[end], hashtag_list[start]))
+
                         # remove the tweets more than 60 second older than the current tweet
-                        for k in hashtag_dict.keys():
+                        for k in sorted(hashtag_dict.keys()):
                             time_elapsed = datetime.strptime(created_at.encode('utf-8'), "%a %b %d %H:%M:%S +0000 %Y") - datetime.strptime(k.encode('utf-8'),"%a %b %d %H:%M:%S +0000 %Y")
                             if time_elapsed.total_seconds() > 60:
                                 del hashtag_dict[k]
-                        # finally, all the preparation leads to: average degree!
-                        if hashtag_dict:
-                            result = average_degree(hashtag_dict)
-                            # print result
+                            else:
+                                break
+                        # finally, fill the graph, and derive average degree
+                        for k in hashtag_dict:
+                            for tag in hashtag_dict[k]:
+                                graph.add_vertex(tag)
+                            length = len(hashtag_dict[k])
+                            for start in range(length - 1):
+                                for end in range(start+1, length):
+                                    graph.add_edge((hashtag_dict[k][start], hashtag_dict[k][end]))
+                            result = average_degree_graph(graph)
                             output.write(str(result) + '\n')
                         continue
 
