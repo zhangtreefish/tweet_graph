@@ -45,18 +45,8 @@ def main():
                         if 'entities' in tweet_json:
                             if 'hashtags' in tweet_json['entities']:
                                 hashtags = tweet_json['entities']['hashtags']
-                                hashtag_list = []
-                                # make a list with the hashtags
-                                for hashtag in hashtags:
-                                    if 'text' in hashtag:
-                                        # encode() turns unicode to string
-                                        tag = hashtag['text'].encode('utf-8').strip()
-                                        hashtag_list.append(tag)
-
-                                # TODO: list comprehension below raises empty set error
-                                # if 'text' in hashtags[hashtag]:
-                                #     hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
-                                # update hashtag_dict if at least 2 tags
+                                hashtag_list = [i['text'].encode('utf-8').strip() for i in hashtags]
+                                # update hashtag_dict with tweet of at least 2 tags
                                 hashtag_list = list(set(hashtag_list)) # keep only unique tags
                                 if len(hashtag_list) > 1:
                                     hashtag_dict[created_at] = hashtag_list
