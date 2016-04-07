@@ -19,3 +19,5 @@ Go to the project directory ('coding-challenge/'), and enter:
    -points
 8. http://www.cyberciti.biz/faq/run-execute-sh-shell-script/
 9. https://github.com/m-yu/InsightTwitterProject/blob/master/src/average_degree.py
+10. http://pep8online.com/
+11. https://partofthething.com/thoughts/?p=513
