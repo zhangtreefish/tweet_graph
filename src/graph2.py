@@ -26,25 +26,30 @@ class Graph(object):
         if vertex not in self.__graph_dict:
             self.__graph_dict[vertex] = []
 
-    def add_edge(self, edge):
+    def add_edge(self, edge_end1, edge_end2):
         """ assumes that edge is of type set, tuple or list;
             between two vertices can be multiple edges!
-            [Edited by this author: if edge]
+            [Edited by this author: remove check and pop for performance]
         """
-        if edge:
-            edge = set(edge)
-            vertex1 = edge.pop()
-            vertex2 = None
-            if edge:
-                # not a loop
-                vertex2 = edge.pop()
-            # else:
-            #     # a loop
-            #     vertex2 = vertex1
-            if vertex1 in self.__graph_dict:
-                self.__graph_dict[vertex1].append(vertex2)
-            else:
-                self.__graph_dict[vertex1] = [vertex2]
+        # if edge:
+        #     edge = set(edge)
+        #     vertex1 = edge.pop()
+        #     vertex2 = None
+        #     if edge:
+        #         # not a loop
+        #         vertex2 = edge.pop()
+        #     # else:
+        #     #     # a loop
+        #     #     vertex2 = vertex1
+        #     if vertex1 in self.__graph_dict:
+        #         self.__graph_dict[vertex1].append(vertex2)
+        #     else:
+        #         self.__graph_dict[vertex1] = [vertex2]
+        if edge_end1 in self.__graph_dict:
+            if edge_end2 not in self.__graph_dict[edge_end1]:
+                self.__graph_dict[edge_end1].append(edge_end2)
+        else:
+            self.__graph_dict[edge_end1] = [edge_end2]
 
     def __generate_edges(self):
         """ A static method generating the edges of the
