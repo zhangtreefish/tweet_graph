@@ -42,7 +42,7 @@ def main():
                     if len(hashtag_dict.keys()) == 0:
                         time_last_tweet = created_at
                     else:
-                        time_last_tweet = hashtag_dict.keys()[-1]
+                        time_last_tweet = sorted(hashtag_dict.keys())[-1]
                     # ensure to only address tweets not over 60 seconds older
                     # than the last
                     time_delta = created_at - time_last_tweet
